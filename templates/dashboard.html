@@ -1,23 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Bakery Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
 
-    <h1>📊 Bakery Dashboard</h1>
+    <!-- Navbar -->
+    {% include 'components/navbar.html' %}
 
-    <ul>
-        <li>🏠 Dashboard</li>
-        <li>🧁 Products</li>
-        <li>📦 Inventory</li>
-        <li>💰 Sales</li>
-        <li>📖 Recipes</li>
-        <li>🤖 AI Prediction</li>
-        <li>🧾 Invoices</li>
-    </ul>
+    <div class="container">
+
+        <!-- Heading -->
+        <h1 class="mt-4 mb-4">📊 Bakery Dashboard</h1>
+
+        <!-- Statistics Cards -->
+        <div class="row g-4">
+
+            <div class="col-md-3">
+                <div class="card shadow">
+                    <div class="card-body text-center">
+                        <h5>Today's Sales</h5>
+                        <h2>₹4500</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow">
+                    <div class="card-body text-center">
+                        <h5>Orders</h5>
+                        <h2>35</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow">
+                    <div class="card-body text-center">
+                        <h5>Products</h5>
+                        <h2>18</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow">
+                    <div class="card-body text-center">
+                        <h5>Low Stock</h5>
+                        <h2>4</h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Chart and Alerts Section -->
+        <div class="row mt-5">
+
+            <!-- Sales Chart -->
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h4 class="mb-3">📈 Weekly Sales</h4>
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Low Stock Alerts -->
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h4 class="mb-3">⚠️ Low Stock Alerts</h4>
+
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                🍫 Dark Chocolate - Low
+                            </li>
+                            <li class="list-group-item">
+                                🧈 Butter - Low
+                            </li>
+                            <li class="list-group-item">
+                                🥛 Milk - Available
+                            </li>
+                            <li class="list-group-item">
+                                🌾 Flour - Available
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const ctx = document.getElementById('salesChart');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Sales',
+                    data: [12, 19, 8, 15, 22, 28, 35],
+                    borderWidth: 3,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true
+            }
+        });
+    </script>
 
 </body>
+
 </html>

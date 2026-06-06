@@ -4,17 +4,39 @@ body{
 }
 
 .hero{
-    min-height: 90vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.display-3{
-    color:#6f4e37;
+.card{
+    border: none;
+    border-radius: 18px;
+    transition: 0.3s;
 }
 
-.btn-dark{
-    border-radius:15px;
-    padding:12px 30px;
+.card:hover{
+    transform: translateY(-5px);
+}
+
+h1,h2,h4,h5{
+    color: #6f4e37;
+}
+
+.btn{
+    border-radius: 12px;
+}
+
+.form-control{
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.shadow-lg{
+    border-radius: 20px;
+}
+
+footer{
+    margin-top: 50px;
 }

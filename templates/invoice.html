@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+{% include 'components/navbar.html' %}
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg p-5 text-center">
+
+        <h1>🧾 Invoice Generator</h1>
+
+        <p class="lead">
+            Generate invoices for your bakery customers.
+        </p>
+
+        <button class="btn btn-warning btn-lg mt-3">
+            Create New Invoice
+        </button>
+
+        <p class="mt-5 text-muted">
+            Invoice generation functionality will be added in Week 2.
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>

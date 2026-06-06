@@ -5,41 +5,124 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Bakery Manager</title>
 
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
 
-<nav class="navbar navbar-expand-lg bg-white shadow-sm">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="#">
-            🍰 AI Bakery Manager
-        </a>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container">
 
-        <a href="/dashboard" class="btn btn-warning">
-            Dashboard
-        </a>
-    </div>
-</nav>
+            <a class="navbar-brand fw-bold" href="/">
+                🍰 AI Bakery Manager
+            </a>
 
-<section class="hero">
-    <div class="container text-center">
+            <a href="/dashboard" class="btn btn-warning">
+                Dashboard
+            </a>
 
-        <h1 class="display-3 fw-bold">
-            Smart Bakery Management
-        </h1>
+        </div>
+    </nav>
 
-        <p class="lead mt-3">
-            Inventory • Sales Analytics • AI Demand Prediction
-        </p>
+    <!-- Hero Section -->
+    <section class="hero">
 
-        <a href="/dashboard" class="btn btn-lg btn-dark mt-4">
-            Get Started
-        </a>
+        <div class="container text-center">
 
-    </div>
-</section>
+            <h1 class="display-3 fw-bold">
+                Smart Bakery Management
+            </h1>
+
+            <p class="lead mt-3">
+                Inventory • Sales Analytics • AI Demand Prediction
+            </p>
+
+            <!-- Login & Register Buttons -->
+            <div class="mt-4">
+
+                <a href="/login" class="btn btn-dark btn-lg me-3">
+                    Login
+                </a>
+
+                <a href="/register" class="btn btn-warning btn-lg">
+                    Register
+                </a>
+
+            </div>
+
+            <p class="mt-4 text-muted">
+                Manage your bakery operations with AI-powered insights.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5 bg-light">
+
+        <div class="container">
+
+            <h2 class="text-center mb-5">
+                Features
+            </h2>
+
+            <div class="row">
+
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <h3>📦</h3>
+                            <h5>Inventory Management</h5>
+                            <p>
+                                Track ingredients and stock levels with ease.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <h3>💰</h3>
+                            <h5>Sales Analytics</h5>
+                            <p>
+                                Monitor daily sales and business performance.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <h3>🤖</h3>
+                            <h5>AI Prediction</h5>
+                            <p>
+                                Forecast future demand using machine learning.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center py-3 bg-dark text-white">
+        © 2026 AI Bakery Manager | Major Project
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
