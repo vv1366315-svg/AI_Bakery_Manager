@@ -1,0 +1,24 @@
+{% include 'components/navbar.html' %}
+
+<div class="container mt-5">
+
+    <h2>✏ Edit Recipe</h2>
+
+    <form method="POST">
+
+        <input type="text" name="name" class="form-control mb-3"
+               value="{{ recipe.name }}">
+
+        <textarea name="ingredients" class="form-control mb-3">{{ recipe.ingredients }}</textarea>
+
+        <input type="number" name="cost" class="form-control mb-3"
+               value="{{ recipe.cost }}">
+
+        <input type="number" name="selling_price" class="form-control mb-3"
+               value="{{ recipe.selling_price }}">
+
+        <button class="btn btn-primary">Update</button>
+
+    </form>
+
+</div>

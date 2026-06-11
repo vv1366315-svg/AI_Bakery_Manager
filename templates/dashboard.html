@@ -1,135 +1,405 @@
-<!DOCTYPE html>
-<html lang="en">
+dashboar.html
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bakery Dashboard</title>
+{% block title %}
+Bakery Dashboard
+{% endblock %}
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+{% block content %}
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
+<h1 class="mb-4">
+    📊 Bakery Dashboard
+</h1>
 
-<body>
+<!-- Statistics Cards -->
 
-    <!-- Navbar -->
-    {% include 'components/navbar.html' %}
+<div class="row g-4">
 
-    <div class="container">
 
-        <!-- Heading -->
-        <h1 class="mt-4 mb-4">📊 Bakery Dashboard</h1>
-
-        <!-- Statistics Cards -->
-        <div class="row g-4">
-
-            <div class="col-md-3">
-                <div class="card shadow">
-                    <div class="card-body text-center">
-                        <h5>Today's Sales</h5>
-                        <h2>₹4500</h2>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow">
-                    <div class="card-body text-center">
-                        <h5>Orders</h5>
-                        <h2>35</h2>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow">
-                    <div class="card-body text-center">
-                        <h5>Products</h5>
-                        <h2>18</h2>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow">
-                    <div class="card-body text-center">
-                        <h5>Low Stock</h5>
-                        <h2>4</h2>
-                    </div>
-                </div>
-            </div>
-
+<div class="col-md-3">
+    <div class="card shadow">
+        <div class="card-body text-center">
+            <h5>Total Sales</h5>
+            <h2>₹{{ total_sales }}</h2>
         </div>
+    </div>
+</div>
 
-        <!-- Chart and Alerts Section -->
-        <div class="row mt-5">
+<div class="col-md-3">
+    <div class="card shadow">
+        <div class="card-body text-center">
+            <h5>Orders</h5>
+            <h2>{{ total_orders }}</h2>
+        </div>
+    </div>
+</div>
 
-            <!-- Sales Chart -->
-            <div class="col-md-8">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <h4 class="mb-3">📈 Weekly Sales</h4>
-                        <canvas id="salesChart"></canvas>
-                    </div>
-                </div>
-            </div>
+<div class="col-md-3">
+    <div class="card shadow">
+        <div class="card-body text-center">
+            <h5>Products</h5>
+            <h2>{{ total_products }}</h2>
+        </div>
+    </div>
+</div>
 
-            <!-- Low Stock Alerts -->
-            <div class="col-md-4">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <h4 class="mb-3">⚠️ Low Stock Alerts</h4>
+<div class="col-md-3">
+    <div class="card shadow">
+        <div class="card-body text-center">
+            <h5>Total Stock</h5>
+            <h2>{{ total_stock }}</h2>
+        </div>
+    </div>
+</div>
 
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                🍫 Dark Chocolate - Low
-                            </li>
-                            <li class="list-group-item">
-                                🧈 Butter - Low
-                            </li>
-                            <li class="list-group-item">
-                                🥛 Milk - Available
-                            </li>
-                            <li class="list-group-item">
-                                🌾 Flour - Available
-                            </li>
-                        </ul>
 
-                    </div>
-                </div>
-            </div>
+</div>
+
+<!-- Chart and Alerts Section -->
+
+<div class="row mt-5">
+
+
+<!-- Weekly Sales Chart -->
+
+<div class="col-md-8">
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <h4 class="mb-3">
+                📈 Weekly Sales
+            </h4>
+
+            <canvas id="salesChart"></canvas>
 
         </div>
 
     </div>
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</div>
 
-    <script>
-        const ctx = document.getElementById('salesChart');
+<!-- Inventory Status + Low Stock -->
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Sales',
-                    data: [12, 19, 8, 15, 22, 28, 35],
-                    borderWidth: 3,
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true
-            }
-        });
-    </script>
+<div class="col-md-4">
 
-</body>
+    <!-- Inventory Status -->
 
-</html>
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <h4 class="mb-3">
+                ⚠️ Inventory Status
+            </h4>
+
+            <ul class="list-group">
+
+                <li class="list-group-item">
+                    🍰 Products Available:
+                    {{ total_products }}
+                </li>
+
+                <li class="list-group-item">
+                    📦 Total Stock:
+                    {{ total_stock }}
+                </li>
+
+                <li class="list-group-item">
+                    🤖 AI Prediction Module Coming Soon
+                </li>
+
+                <li class="list-group-item">
+                    🚀 Inventory Module Coming Soon
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <!-- Low Stock Products -->
+
+    <div class="card shadow mt-4">
+
+        <div class="card-header bg-warning">
+            <h5 class="mb-0">
+                ⚠️ Low Stock Products
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            {% if low_stock_products %}
+
+                <ul class="list-group">
+
+                    {% for product in low_stock_products %}
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                        {{ product.name }}
+
+                        <span class="badge
+                        {% if product.stock == 0 %}
+                            bg-dark
+                        {% elif product.stock <= 2 %}
+                            bg-danger
+                        {% else %}
+                            bg-warning text-dark
+                        {% endif %}
+                        ">
+                            {{ product.stock }} left
+                        </span>
+
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p class="text-success mb-0">
+                    ✅ No low-stock products.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</div>
+
+<div class="card shadow mt-4">
+
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">
+            🏆 Top Selling Products
+        </h5>
+    </div>
+
+    <div class="card-body">
+
+        {% if top_products %}
+
+            <ol class="list-group list-group-numbered">
+
+                {% for product in top_products %}
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                    {{ product.name }}
+
+                    <span class="badge bg-success">
+                        {{ product.total_sold }} sold
+                    </span>
+
+                </li>
+
+                {% endfor %}
+
+            </ol>
+
+        {% else %}
+
+            <p class="text-muted">
+                No sales data available yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<!-- Recent Sales -->
+
+<div class="card shadow mt-5">
+
+
+<div class="card-header">
+    <h4 class="mb-0">
+        🛒 Recent Sales
+    </h4>
+</div>
+
+<div class="card-body">
+
+    {% if recent_sales %}
+
+    <table class="table table-striped">
+
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for sale in recent_sales %}
+
+            <tr>
+                <td>{{ sale.product.name }}</td>
+                <td>{{ sale.quantity }}</td>
+                <td>₹{{ sale.total_price }}</td>
+                <td>{{ sale.sale_date.strftime('%d-%m-%Y') }}</td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <p class="text-muted">
+        No sales recorded yet.
+    </p>
+
+    {% endif %}
+
+</div>
+
+
+</div>
+
+<!-- Chart.js -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx = document.getElementById('salesChart');
+
+new Chart(ctx, {
+
+    type: 'line',
+
+    data: {
+
+        labels: {{ week_labels | tojson }},
+
+        datasets: [{
+
+            label: 'Sales',
+
+            data: {{ week_sales | tojson }},
+
+            borderWidth: 3,
+
+            fill: false
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: true
+
+    }
+
+});
+
+</script>
+
+{% endblock %}
+
+and app.py
+
+@app.route("/dashboard")
+def dashboard():
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    products = Product.query.all()
+    sales = Sale.query.all()
+
+    total_products = len(products)
+
+    total_stock = sum(
+        product.stock
+        for product in products
+    )
+
+    total_sales = sum(
+        sale.total_price
+        for sale in sales
+    )
+
+    total_orders = len(sales)
+
+    low_stock_products = Product.query.filter(
+        Product.stock <= 5
+    ).all()
+
+    recent_sales = Sale.query.order_by(
+        Sale.sale_date.desc()
+    ).limit(5).all()
+    
+    top_products = db.session.query(
+    Product.name,
+    func.sum(Sale.quantity).label("total_sold")
+).join(
+    Sale,
+    Product.id == Sale.product_id
+).group_by(
+    Product.id,
+    Product.name
+).order_by(
+    func.sum(Sale.quantity).desc()
+).limit(5).all()
+
+    # Last 7 days sales data
+
+    week_labels = []
+    week_sales = []
+
+    for i in range(6, -1, -1):
+
+        day = datetime.utcnow().date() - timedelta(days=i)
+
+        sales_for_day = Sale.query.filter(
+            db.func.date(Sale.sale_date) == day
+        ).all()
+
+        total_day_sales = sum(
+            sale.total_price
+            for sale in sales_for_day
+        )
+
+        week_labels.append(
+            day.strftime("%a")
+        )
+
+        week_sales.append(
+            total_day_sales
+        )
+
+    return render_template(
+        "dashboard.html",
+        total_products=total_products,
+        total_stock=total_stock,
+        total_sales=total_sales,
+        total_orders=total_orders,
+        low_stock_products=low_stock_products,
+        recent_sales=recent_sales,
+        week_labels=week_labels,
+        week_sales=week_sales,
+        top_products=top_products
+    )
