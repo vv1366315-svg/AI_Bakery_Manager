@@ -44,15 +44,26 @@ Recipes
             </div>
 
             <div class="mb-3">
-                <label class="form-label">
-                    Ingredients
-                </label>
+    <label class="form-label">
+        Ingredients
+    </label>
 
-                <textarea
-                    name="ingredients"
-                    class="form-control"
-                    rows="3"></textarea>
-            </div>
+    <textarea
+        name="ingredients"
+        class="form-control"
+        rows="3"></textarea>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">
+        Recipe Instructions
+    </label>
+
+    <textarea
+        name="instructions"
+        class="form-control"
+        rows="5"></textarea>
+</div>
 
             <div class="row">
 
@@ -202,17 +213,23 @@ Recipes
 
                     <td>
 
-                        <a href="/edit-recipe/{{ recipe.id }}"
-                           class="btn btn-warning btn-sm">
-                            Edit
-                        </a>
+    <a href="/edit-recipe/{{ recipe.id }}"
+       class="btn btn-warning btn-sm">
+        Edit
+    </a>
 
-                        <a href="/delete-recipe/{{ recipe.id }}"
-                           class="btn btn-danger btn-sm">
-                            Delete
-                        </a>
+    <a href="/recipe-details/{{ recipe.id }}"
+       class="btn btn-info btn-sm">
+        View Recipe
+    </a>
 
-                    </td>
+    <a href="/delete-recipe/{{ recipe.id }}"
+       class="btn btn-danger btn-sm"
+       onclick="return confirm('Delete this recipe?')">
+        Delete
+    </a>
+
+</td>
 
                 </tr>
 

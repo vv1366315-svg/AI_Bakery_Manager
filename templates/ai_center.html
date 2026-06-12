@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}
+AI Center
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">
+        🤖 AI Center
+    </h2>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-body">
+
+                    <h4>📈 Sales Forecasting</h4>
+
+                    <p>
+                        Predict future product demand using machine learning.
+                    </p>
+
+                    <a href="{{ url_for('prediction') }}"
+   class="btn btn-success">
+    Open
+</a>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-body">
+
+                    <h4>📦 Inventory Suggestions</h4>
+
+                    <p>
+                        AI-based stock recommendations.
+                    </p>
+
+                    <a href="{{ url_for('ai_inventory') }}" class="btn btn-success">
+    Open
+</a>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-body">
+
+                    <h4>🍰 Recipe Generator</h4>
+
+                    <p>
+                        Generate bakery recipes using Gemini AI.
+                    </p>
+
+                    <button class="btn btn-secondary" disabled>
+                        Coming Soon
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}
+AI Inventory Suggestions
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>📦 AI Inventory Suggestions</h2>
+
+    <p class="text-muted">
+        AI-based stock recommendations using sales forecasting
+    </p>
+
+    <div class="card shadow mt-3">
+
+        <div class="card-body">
+
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Suggested Qty</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in inventory_suggestions %}
+
+                    <tr>
+                        <td>{{ item.product }}</td>
+                        <td>{{ item.suggested_qty }}</td>
+
+                        <td>
+                            {% if item.status == "Increase Stock" %}
+                                <span class="badge bg-danger">
+                                    Increase Stock
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success">
+                                    Stock OK
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

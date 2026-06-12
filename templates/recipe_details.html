@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header">
+        📖 {{ recipe.name }}
+    </div>
+
+    <div class="card-body">
+
+        <h5>Ingredients</h5>
+
+        <p>
+            {{ recipe.ingredients }}
+        </p>
+
+        <hr>
+
+        <h5>Instructions</h5>
+
+        <p>
+            {{ recipe.instructions }}
+        </p>
+
+        <hr>
+
+        <h5>Cost Analysis</h5>
+
+        <ul>
+
+            <li>Ingredient Cost: ₹{{ recipe.ingredient_cost }}</li>
+
+            <li>Packaging Cost: ₹{{ recipe.packaging_cost }}</li>
+
+            <li>Labour Cost: ₹{{ recipe.labour_cost }}</li>
+
+            <li>Electricity Cost: ₹{{ recipe.electricity_cost }}</li>
+
+            <li>Total Cost: ₹{{ recipe.total_cost }}</li>
+
+            <li>Selling Price: ₹{{ recipe.selling_price }}</li>
+
+            <li>Profit: ₹{{ recipe.profit }}</li>
+
+            <li>Margin: {{ recipe.margin | round(1) }}%</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+{% endblock %}

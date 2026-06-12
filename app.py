@@ -8,20 +8,51 @@ app = Flask(__name__)
 app.config.from_object(Config)
 app.config["SECRET_KEY"] = "your_secret_key_here"
 
-from models.models import db, User, Product, Inventory, Sale,  Recipe
+from models.models import db, User, Product, Inventory, Sale, Recipe
 
 db.init_app(app)
 bcrypt = Bcrypt(app)
 
+from ai.sales_forecast import predict_sales
 
 
+# ---------------- AI FUNCTION ----------------
+
+def calculate_reorder_quantity_ai(product):
+    print("AI FUNCTION CALLED FOR:", product.name)
+
+    start_date = datetime.utcnow() - timedelta(days=7)
+
+    last_7_days_sales = db.session.query(func.sum(Sale.quantity)).filter(
+        Sale.product_id == product.id,
+        Sale.sale_date >= start_date
+    ).scalar()
+
+    if not last_7_days_sales or last_7_days_sales == 0:
+        last_7_days_sales = max(product.stock * 0.3, 2)
+
+    avg_daily_demand = max(last_7_days_sales / 7, 1)
+
+    predicted_demand = avg_daily_demand * 7
+
+    safety_stock = max(int(predicted_demand * 0.25), 2)
+
+    required_stock = int(predicted_demand + safety_stock)
+
+    reorder_qty = required_stock - product.stock
+
+    if product.stock < 5:
+        return max(10, reorder_qty)
+
+    return max(reorder_qty, 0)
 
 
-# -------------------- ROUTES --------------------
+# ---------------- ROUTES ----------------
 
 @app.route("/")
 def landing():
     return render_template("landing.html")
+
 
 @app.route("/dashboard")
 def dashboard():
@@ -33,47 +64,53 @@ def dashboard():
     sales = Sale.query.all()
 
     total_products = len(products)
-
-    total_stock = sum(
-        product.stock
-        for product in products
-    )
-
-    total_sales = sum(
-        sale.total_price
-        for sale in sales
-    )
-
+    total_stock = sum(product.stock for product in products)
+    total_sales = sum(sale.total_price for sale in sales)
     total_orders = len(sales)
 
-    low_stock_products = Product.query.filter(
-        Product.stock <= 5
+    # ---------------- LOW STOCK + AI REORDER ----------------
+
+    low_stock_products_raw = Product.query.filter(
+        Product.stock <= 10
     ).all()
+
+    low_stock_products = []
+
+    for p in low_stock_products_raw:
+        low_stock_products.append({
+            "id": p.id,
+            "name": p.name,
+            "stock": p.stock,
+            "reorder_qty": calculate_reorder_quantity_ai(p)
+        })
+
+    # ---------------- RECENT SALES ----------------
 
     recent_sales = Sale.query.order_by(
         Sale.sale_date.desc()
     ).limit(5).all()
-    
-    top_products = db.session.query(
-    Product.name,
-    func.sum(Sale.quantity).label("total_sold")
-).join(
-    Sale,
-    Product.id == Sale.product_id
-).group_by(
-    Product.id,
-    Product.name
-).order_by(
-    func.sum(Sale.quantity).desc()
-).limit(5).all()
 
-    # Last 7 days sales data
+    # ---------------- TOP PRODUCTS ----------------
+
+    top_products = db.session.query(
+        Product.name,
+        func.sum(Sale.quantity).label("total_sold")
+    ).join(
+        Sale,
+        Product.id == Sale.product_id
+    ).group_by(
+        Product.id,
+        Product.name
+    ).order_by(
+        func.sum(Sale.quantity).desc()
+    ).limit(5).all()
+
+    # ---------------- WEEKLY SALES ----------------
 
     week_labels = []
     week_sales = []
 
     for i in range(6, -1, -1):
-
         day = datetime.utcnow().date() - timedelta(days=i)
 
         sales_for_day = Sale.query.filter(
@@ -81,17 +118,11 @@ def dashboard():
         ).all()
 
         total_day_sales = sum(
-            sale.total_price
-            for sale in sales_for_day
+            sale.total_price for sale in sales_for_day
         )
 
-        week_labels.append(
-            day.strftime("%a")
-        )
-
-        week_sales.append(
-            total_day_sales
-        )
+        week_labels.append(day.strftime("%a"))
+        week_sales.append(total_day_sales)
 
     return render_template(
         "dashboard.html",
@@ -326,10 +357,65 @@ def edit_recipe(id):
         recipe.selling_price = float(
             request.form["selling_price"]
         )
+        
+@app.route("/recipe-details/<int:id>")
+def recipe_details(id):
 
-        db.session.commit()
+    recipe = Recipe.query.get_or_404(id)
 
-        return redirect(url_for("recipes"))
+    return render_template(
+        "recipe_details.html",
+        recipe=recipe
+    )
+    
+@app.route("/sales-forecast")
+def sales_forecast():
+
+    predictions = []
+
+    products = Product.query.all()
+
+    for product in products:
+
+        sales = Sale.query.filter_by(
+            product_id=product.id
+        ).order_by(
+            Sale.sale_date
+        ).all()
+
+        quantities = []
+
+        for sale in sales:
+            quantities.append(sale.quantity)
+
+        prediction = predict_sales(quantities)
+
+        predictions.append({
+            "product": product.name,
+            "prediction": prediction
+        })
+
+    # Sort highest prediction first
+    predictions.sort(
+        key=lambda x: x["prediction"],
+        reverse=True
+    )
+
+    return render_template(
+        "sales_forecast.html",
+        predictions=predictions
+    )
+@app.route("/ai-center")
+def ai_center():
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    return render_template("ai_center.html")
+
+    db.session.commit()
+
+    return redirect(url_for("recipes"))
 
     return render_template(
         "edit_recipe.html",
@@ -338,9 +424,119 @@ def edit_recipe(id):
 
 @app.route("/prediction")
 def prediction():
-    return render_template("prediction.html")
 
+    if "user" not in session:
+        return redirect(url_for("login"))
 
+    predictions = []
+    products = Product.query.all()
+
+    # STEP 1: Predictions
+    for product in products:
+
+        sales = Sale.query.filter_by(
+            product_id=product.id
+        ).order_by(
+            Sale.sale_date
+        ).all()
+
+        quantities = [sale.quantity for sale in sales]
+
+        prediction_value = predict_sales(quantities)
+
+        predictions.append({
+            "product": product.name,
+            "prediction": prediction_value
+        })
+
+    # STEP 2: Sort predictions
+    predictions.sort(
+        key=lambda x: x["prediction"],
+        reverse=True
+    )
+
+    # STEP 3: Graph + actual values
+    product_names = []
+    predicted_values = []
+    actual_values = []
+   
+
+    for item in predictions:
+
+        product_names.append(item["product"])
+        predicted_values.append(item["prediction"])
+
+        # actual sales
+        actual_sales = db.session.query(
+            func.sum(Sale.quantity)
+        ).join(Product).filter(
+            Product.name == item["product"]
+        ).scalar() or 0
+
+        actual_values.append(actual_sales)
+
+        
+
+    # STEP 5: Render template
+    return render_template(
+        "prediction.html",
+        predictions=predictions,
+        product_names=product_names,
+        predicted_values=predicted_values,
+        actual_values=actual_values
+    )
+    
+@app.route("/ai-inventory")
+def ai_inventory():
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    products = Product.query.all()
+
+    inventory_suggestions = []
+
+    for product in products:
+
+        sales = Sale.query.filter_by(
+            product_id=product.id
+        ).all()
+
+        quantities = [sale.quantity for sale in sales]
+
+        predicted_value = predict_sales(quantities)
+
+        actual_sales = db.session.query(
+            func.sum(Sale.quantity)
+        ).filter(
+            Sale.product_id == product.id
+        ).scalar() or 0
+
+        gap = predicted_value - actual_sales
+
+        if gap > 0:
+            inventory_suggestions.append({
+                "product": product.name,
+                "suggested_qty": round(gap),
+                "status": "Increase Stock"
+            })
+        else:
+            inventory_suggestions.append({
+                "product": product.name,
+                "suggested_qty": 0,
+                "status": "Stock OK"
+            })
+
+    # sort (highest demand first)
+    inventory_suggestions.sort(
+        key=lambda x: x["suggested_qty"],
+        reverse=True
+    )
+
+    return render_template(
+        "ai_inventory.html",
+        inventory_suggestions=inventory_suggestions
+    )
 @app.route("/invoice")
 def invoice():
     return render_template("invoice.html")

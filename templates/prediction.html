@@ -1,46 +1,136 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Prediction</title>
+{% extends "base.html" %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% block title %}
+AI Sales Forecast Dashboard
+{% endblock %}
 
-{% include 'components/navbar.html' %}
+{% block content %}
 
-<div class="container mt-5">
+<div class="container mt-4">
 
-    <div class="card shadow-lg p-5 text-center">
+    <h2 class="mb-4">🤖 AI Sales Forecast Dashboard</h2>
 
-        <h1>🤖 AI Sales Prediction</h1>
+    <!-- INSIGHTS CARDS -->
+    <div class="row mb-4">
 
-        <p class="lead mt-3">
-            Forecast bakery sales using Artificial Intelligence.
-        </p>
-
-        <div class="mt-4">
-
-            <button class="btn btn-dark btn-lg me-3">
-                Upload Sales Data
-            </button>
-
-            <button class="btn btn-warning btn-lg">
-                Generate Forecast
-            </button>
-
+        <div class="col-md-4">
+            <div class="card shadow text-center p-3">
+                <h5>🔥 Top Demand Product</h5>
+                <h3>
+                    {{ predictions[0].product if predictions }}
+                </h3>
+            </div>
         </div>
 
-        <p class="mt-5 text-muted">
-            AI Prediction Module will be implemented in Week 3.
-        </p>
+        <div class="col-md-4">
+            <div class="card shadow text-center p-3">
+                <h5>📈 Highest Prediction</h5>
+                <h3>
+                    {{ predictions[0].prediction if predictions }}
+                </h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow text-center p-3">
+                <h5>📦 Total Products Analyzed</h5>
+                <h3>
+                    {{ predictions|length }}
+                </h3>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- GRAPH SECTION -->
+    <div class="card shadow p-3">
+
+        <h4>📊 Predicted Sales Graph</h4>
+
+        <canvas id="forecastChart"></canvas>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="card shadow mt-4">
+
+        <div class="card-header">
+            <h5>📋 Prediction Table</h5>
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Predicted Sales</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in predictions %}
+                    <tr>
+                        <td>{{ item.product }}</td>
+                        <td>{{ item.prediction }}</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
 
 </div>
 
-</body>
-</html>
+
+
+<!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx = document.getElementById('forecastChart');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ product_names | tojson }},
+        datasets: [
+
+            {
+                label: 'Actual Sales',
+                data: {{ actual_values | tojson }},
+                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+            },
+
+            {
+                label: 'Predicted Sales (AI)',
+                data: {{ predicted_values | tojson }},
+                backgroundColor: 'rgba(255, 99, 132, 0.6)'
+            }
+
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top'
+            },
+            title: {
+                display: true,
+                text: 'Actual vs Predicted Sales Comparison'
+            }
+        }
+    }
+});
+
+</script>
+
+{% endblock %}

@@ -99,6 +99,9 @@ class Recipe(db.Model):
     )
 
     ingredients = db.Column(db.Text)
+    instructions = db.Column(
+    db.Text
+)
 
     ingredient_cost = db.Column(
         db.Float,

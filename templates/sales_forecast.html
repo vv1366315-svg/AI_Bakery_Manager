@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}
+AI Sales Forecast
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">
+        🤖 AI Sales Forecast
+    </h2>
+
+    <div class="card shadow">
+
+        <div class="card-header">
+            Predicted Future Sales
+        </div>
+
+        <div class="card-body">
+
+            {% if predictions %}
+
+            <table class="table table-striped">
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Predicted Sales</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in predictions %}
+
+                    <tr>
+                        <td>{{ item.product }}</td>
+                        <td>{{ item.prediction }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <p class="text-muted">
+                No sales data available.
+            </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
